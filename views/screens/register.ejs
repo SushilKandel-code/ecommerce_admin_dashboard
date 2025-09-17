@@ -1,91 +1,71 @@
 <%- include('../partials/header.ejs') %>
 
-<div class="row col-md-16 justify-content-center">
-  <div class="col-sm-4">
-    <div class="card">
-      <div class="card-body">
-        <form id="registerForm" action="/register" method="POST">
-          <!-- Name input -->
-          <div class="form-outline mb-4">
-            <label class="form-label" for="name"> Name</label>
-            <input
-              type="text"
-              name="name"
-              class="form-control"
-              required="true"
-            />
-          </div>
-          <!-- Email input -->
-          <div class="form-outline mb-4">
-            <label class="form-label" for="email">Email address</label>
-            <input
-              type="email"
-              name="username"
-              class="form-control"
-              required="true"
-            />
-          </div>
-          <!-- Password input -->
-          <div class="form-outline mb-4">
-            <label class="form-label" for="password">Password</label>
-            <input
-              type="password"
-              name="password"
-              class="form-control"
-              required="true"
-            />
-          </div>
+  <div class="row col-md-16 justify-content-center">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <form id="registerForm" action="/register" method="POST">
+            <!-- Name input -->
+            <div class="form-outline mb-4">
+              <label class="form-label" for="name"> Name</label>
+              <input type="text" name="name" class="form-control" required="true" />
+            </div>
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <label class="form-label" for="email">Email address</label>
+              <input type="email" name="username" class="form-control" required="true" />
+            </div>
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <label class="form-label" for="password">Password</label>
+              <input type="password" name="password" class="form-control" required="true" />
+            </div>
 
-          <div class="btn-group">
-            <button
-              class="btn btn-dark dropdown-toggle"
-              id="roleDropdown"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Select Role
-            </button>
+            <div class="btn-group">
+              <button class="btn btn-dark dropdown-toggle" id="roleDropdown" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Select Role
+              </button>
 
-            <ul class="dropdown-menu">
-              <li class="dropdown-item" data-value="User" aria-required="true">
-                User
-              </li>
-              <li class="dropdown-item" data-value="Admin">Admin</li>
-            </ul>
-          </div>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item" data-value="User" aria-required="true">
+                  User
+                </li>
+                <li class="dropdown-item" data-value="Admin">Admin</li>
+              </ul>
+            </div>
 
-          <!-- Hidden input to submit role -->
-          <input type="hidden" name="role" id="selectedRole" />
-          <!-- Submit button -->
-          <div class="py-5">
-            <button id="registerBtn" type="submit" class="btn btn-primary btn-block">
-              Register
-            </button>
-          </div>
-        </form>
+            <!-- Hidden input to submit role -->
+            <input type="hidden" name="role" id="selectedRole" />
+            <!-- Submit button -->
+            <div class="py-5">
+              <button id="registerBtn" type="submit" class="btn btn-primary btn-block">
+                Register
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<script>
-  document.querySelectorAll(".dropdown-item").forEach((item) => {
-    item.addEventListener("click", function (e) {
-      e.preventDefault();
-      const role = this.getAttribute("data-value");
-      document.getElementById("selectedRole").value = role;
-      document.getElementById("roleDropdown").innerText = role;
+  <script>
+    document.querySelectorAll(".dropdown-item").forEach((item) => {
+      item.addEventListener("click", function (e) {
+        e.preventDefault();
+        const role = this.getAttribute("data-value");
+        document.getElementById("selectedRole").value = role;
+        document.getElementById("roleDropdown").innerText = role;
+      });
     });
-  });
 
-  document.getElementById("registerForm").addEventListener("submit", function () {
-    let btn = document.getElementById("registerBtn");
-    btn.disabled = true; // disable to prevent double-click
-    btn.innerHTML = `
+    document.getElementById("registerForm").addEventListener("submit", function () {
+      let btn = document.getElementById("registerBtn");
+      btn.disabled = true; // disable to prevent double-click
+      btn.innerHTML = `
         <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
         <span role="status"> Loading...</span>
     `;
-    setTimeout(() => {}, 3000);
-  });
-</script>
-<%- include('../partials/fixedFooter.ejs') %>
+      setTimeout(() => { }, 3000);
+    });
+  </script>
+  <%- include('../partials/fixedFooter.ejs') %>
