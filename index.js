@@ -49,7 +49,7 @@ let categories = [];
 let products = [];
 
 
-// GET Routes
+//---------------GET ROUTES //
 app.get("/", (req, res) => {
     res.render("index.ejs")
 });
@@ -152,9 +152,9 @@ app.get("/logout", (req, res) => {
 
 });
 
-// POST Routes
+//----------------------- POST Routes-------------------------------//
 
-// Login 
+// ------Login------- 
 app.post("/login", async (req, res) => {
     const email = req.body.username;
     const password = req.body.password;
@@ -187,7 +187,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-//Register
+//--------Register---------
 app.post("/register", async (req, res) => {
     const name = req.body.name
     const email = req.body.username;
@@ -231,7 +231,7 @@ app.post("/register", async (req, res) => {
 });
 
 
-// Add Category
+//--------- Add Category------------
 app.post("/category", async (req, res) => {
     const name = req.body.name;
     const description = req.body.description;
@@ -251,7 +251,7 @@ app.post("/category", async (req, res) => {
     }
 });
 
-//Add products
+//-----------Add products------------
 app.post("/product", async (req, res) => {
     const name = req.body.name;
     const description = req.body.description;
@@ -284,6 +284,7 @@ app.post("/product", async (req, res) => {
     }
 });
 
+//-------------Add Customer-----------//
 app.post("/customer", async (req, res) => {
     const name = req.body.name
     const email = req.body.email;
@@ -318,53 +319,58 @@ app.post("/customer", async (req, res) => {
     }
 });
 
-// DELETE USER
+
+
+
+
+
+//----------------------DELETE ROUTE--------------------------//
+
+//-------- DELETE USER-----------//
 app.post("/customer/delete/:id", async (req, res) => {
-    const userId = req.params.id;
-    try {
-        await db.query("DELETE FROM users WHERE id = $1", [userId]);
-        res.redirect("/customer");
-    } catch (err) {
-        console.error("Error deleting user:", err);
-        res.send("Error deleting user");
-    }
-});
-
-// GET USER DETAILS FOR EDIT
-app.get("/customer/edit/:id", async (req, res) => {
-    const userId = req.params.id;
-    try {
-        const result = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
-        if (result.rows.length > 0) {
-            res.render("screens/edit/editUser.ejs", { users: result.rows[0] });
-        } else {
-            res.send("User not found");
+    if (req.session.user) {
+        const userId = req.params.id;
+        try {
+            await db.query("DELETE FROM users WHERE id = $1", [userId]);
+            setTimeout(() => {
+                res.redirect("/customer");
+            }, 1000);
+        } catch (err) {
+            console.error("Error deleting user:", err);
+            res.send("Error deleting user");
         }
-    } catch (err) {
-        console.error(err);
-        res.send("Error fetching user data");
+    } else {
+        res.render("/login");
     }
 });
 
-// UPDATE USER
+
+//------------ UPDATE USER-----------//
 app.post("/customer/edit/:id", async (req, res) => {
-    const userId = req.params.id;
-    const { name, email, role } = req.body;
-    try {
-        await db.query(
-            "UPDATE users SET name = $1, email = $2, role = $3 WHERE id = $4",
-            [name, email, role, userId]
-        );
-        res.redirect("/customer");
-    } catch (err) {
-        console.error("Error updating user:", err);
-        res.send("Error updating user");
+    if (req.session.user) {
+        const userId = req.params.id;
+        const { name, email, role } = req.body;
+        try {
+            await db.query(
+                "UPDATE users SET name = $1, email = $2, role = $3 WHERE id = $4",
+                [name, email, role, userId]
+            );
+            setTimeout(() => {
+                res.redirect("/customer");
+            }, 2000);
+
+        } catch (err) {
+            console.error("Error updating user:", err);
+            res.send("Error updating user");
+        }
+    } else {
+        res.redirect("/login");
     }
 });
 
 
 
-
+//--------------LISTEN------------//
 app.listen(port, () => {
     console.log(`Server is starting on port ${port}`);
 });
