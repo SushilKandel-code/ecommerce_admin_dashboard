@@ -49,7 +49,7 @@ let categories = [];
 let products = [];
 
 
-//---------------GET ROUTES //
+//----------------------------------------GET ROUTES------------------------------------- //
 app.get("/", (req, res) => {
     res.render("index.ejs")
 });
@@ -344,6 +344,48 @@ app.post("/customer/delete/:id", async (req, res) => {
     }
 });
 
+//-------- DELETE CATEGORY-----------//
+app.post("/category/delete/:id", async (req, res) => {
+    if (req.session.user) {
+        const userId = req.params.id;
+        try {
+            await db.query("DELETE FROM categories WHERE id = $1", [userId]);
+            setTimeout(() => {
+                res.redirect("/category");
+            }, 1000);
+        } catch (err) {
+            console.error("Error deleting category:", err);
+            res.send("Error deleting category");
+        }
+    } else {
+        res.render("/login");
+    }
+});
+
+
+//-------- DELETE PRODUCT-----------//
+app.post("/product/delete/:id", async (req, res) => {
+    if (req.session.user) {
+        const userId = req.params.id;
+        try {
+            await db.query("DELETE FROM products WHERE id = $1", [userId]);
+            setTimeout(() => {
+                res.redirect("/product");
+            }, 1000);
+        } catch (err) {
+            console.error("Error deleting product:", err);
+            res.send("Error deleting product");
+        }
+    } else {
+        res.render("/login");
+    }
+});
+
+
+
+
+
+//----------------------UPDATE ROUTE--------------------------//
 
 //------------ UPDATE USER-----------//
 app.post("/customer/edit/:id", async (req, res) => {
@@ -367,6 +409,53 @@ app.post("/customer/edit/:id", async (req, res) => {
         res.redirect("/login");
     }
 });
+
+//------------ UPDATE CATEGORY-----------//
+app.post("/category/edit/:id", async (req, res) => {
+    if (req.session.user) {
+        const userId = req.params.id;
+        const { name, description} = req.body;
+        try {
+            await db.query(
+                "UPDATE categories SET name = $1, description = $2 WHERE id = $3",
+                [name, description, userId]
+            );
+            setTimeout(() => {
+                res.redirect("/category");
+            }, 2000);
+
+        } catch (err) {
+            console.error("Error updating category:", err);
+            res.send("Error updating category");
+        }
+    } else {
+        res.redirect("/login");
+    }
+});
+
+//------------ UPDATE PRODUCT-----------//
+app.post("/product/edit/:id", async (req, res) => {
+    if (req.session.user) {
+        const userId = req.params.id;
+        const { name, description, price, stock, image} = req.body;
+        try {
+            await db.query(
+                "UPDATE products SET name = $1, description = $2, price = $3, stock = $4, image_url = $5 WHERE id = $6",
+                [name, description, price, stock, image, userId]
+            );
+            setTimeout(() => {
+                res.redirect("/product");
+            }, 2000);
+
+        } catch (err) {
+            console.error("Error updating product:", err);
+            res.send("Error updating product");
+        }
+    } else {
+        res.redirect("/login");
+    }
+});
+
 
 
 
